@@ -53,8 +53,8 @@ jobs:
       # - name: Linting check
       #   run: npm run lint
 
-      - name: Building application
-        run: npm run build
+#      - name: Building application
+#        run: npm run build
 
       - name: Create ZIP deployment package
         run: zip -r ${{ env.DEPLOY_PACKAGE_NAME }} ./ -x *.git*
