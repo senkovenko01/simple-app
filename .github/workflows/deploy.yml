@@ -18,13 +18,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-            node-version: 16
-
       - name: Check out repository code
         uses: actions/checkout@v3
+
+      - name: Set env to dev
+        if: endsWith(github.ref, '/dev')
+        run: |
+          echo "application_name=dev-nodejs-app" >> $GITHUB_ENV
+          echo "environment_name=Devnodejsapp-env" >> $GITHUB_ENV
+          echo "NODE_ENV=development" >> $GITHUB_ENV
+
+      - name: Set env to production
+        if: endsWith(github.ref, '/main')
+        run: |
+          echo "application_name=nodejs-app" >> $GITHUB_ENV
+          echo "environment_name=Nodejsapp-env" >> $GITHUB_ENV
+          echo "NODE_ENV=production" >> $GITHUB_ENV
+
+      - name: Setup node env
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: 16
+
+      - name: Cache node_modules 📦
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Installing NPM
+        run: npm install
+
+      # - name: Linting check
+      #   run: npm run lint
+
+      - name: Building application
+        run: npm build
 
       - name: Create ZIP deployment package
         run: zip -r ${{ env.DEPLOY_PACKAGE_NAME }} ./ -x *.git*
