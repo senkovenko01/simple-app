@@ -5,6 +5,7 @@ env:
   EB_ENVIRONMENT_NAME: "Githubactions-env-1"
   DEPLOY_PACKAGE_NAME: "github-actions-${{ github.sha }}.zip"
   AWS_REGION_NAME: "eu-west-2"
+
 on: [workflow_dispatch]
 
 permissions:
